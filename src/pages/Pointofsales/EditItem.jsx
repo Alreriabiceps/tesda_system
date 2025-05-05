@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router'
+import React, { useState, useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router'
 import { FaCamera } from 'react-icons/fa'
 
-const AddItem = () => {
+const EditItem = () => {
     const navigate = useNavigate()
+    const { id } = useParams()
     const [formData, setFormData] = useState({
         name: '',
         category: '',
@@ -23,6 +24,26 @@ const AddItem = () => {
         'Books & Stationery',
         'Toys & Games'
     ]
+
+    useEffect(() => {
+        // Load item data from localStorage
+        const items = JSON.parse(localStorage.getItem('pos-items') || '[]')
+        const item = items.find(item => item.id === parseInt(id))
+
+        if (item) {
+            setFormData({
+                name: item.name,
+                category: item.category,
+                price: item.price,
+                quantity: item.quantity,
+                image: item.image
+            })
+            setPreviewUrl(item.image)
+        } else {
+            // If item not found, redirect to item list
+            navigate('/item-list')
+        }
+    }, [id, navigate])
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -52,21 +73,22 @@ const AddItem = () => {
     const handleSubmit = (e) => {
         e.preventDefault()
 
-        // Create new item object with ID
-        const newItem = {
-            id: Date.now(), // Using timestamp as unique ID
-            ...formData,
-            createdAt: new Date().toISOString(),
-            status: formData.quantity > 0 ? 'in-stock' : 'out-of-stock'
-        }
+        // Get existing items
+        const items = JSON.parse(localStorage.getItem('pos-items') || '[]')
 
-        // Get existing items from localStorage
-        const existingItems = JSON.parse(localStorage.getItem('pos-items') || '[]')
+        // Update the item
+        const updatedItems = items.map(item =>
+            item.id === parseInt(id)
+                ? {
+                    ...item,
+                    ...formData,
+                    status: formData.quantity > 0 ? 'in-stock' : 'out-of-stock',
+                    updatedAt: new Date().toISOString()
+                }
+                : item
+        )
 
-        // Add new item to the array
-        const updatedItems = [...existingItems, newItem]
-
-        // Save updated array back to localStorage
+        // Save back to localStorage
         localStorage.setItem('pos-items', JSON.stringify(updatedItems))
 
         // Navigate back to item list
@@ -77,7 +99,7 @@ const AddItem = () => {
         <div className="max-w-2xl mx-auto">
             <div className="card bg-base-100 shadow-xl">
                 <div className="card-body">
-                    <h2 className="card-title text-2xl font-bold mb-6">Add New Item</h2>
+                    <h2 className="card-title text-2xl font-bold mb-6">Edit Item</h2>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Image Upload */}
@@ -193,7 +215,7 @@ const AddItem = () => {
                         <div className="flex justify-end space-x-4 pt-4">
                             <button
                                 type="button"
-                                onClick={() => navigate('/pos/products')}
+                                onClick={() => navigate('/item-list')}
                                 className="btn btn-ghost"
                             >
                                 Cancel
@@ -202,7 +224,7 @@ const AddItem = () => {
                                 type="submit"
                                 className="btn btn-primary"
                             >
-                                Add Item
+                                Update Item
                             </button>
                         </div>
                     </form>
@@ -212,4 +234,4 @@ const AddItem = () => {
     )
 }
 
-export default AddItem
+export default EditItem 

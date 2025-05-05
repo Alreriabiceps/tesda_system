@@ -1,62 +1,58 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router'
 import { useNavigate } from 'react-router'
+import { FaEdit, FaTrash, FaCalendarAlt, FaMapMarkerAlt, FaDoorOpen, FaInfoCircle } from 'react-icons/fa'
 
 const ReservationList = () => {
     const navigate = useNavigate()
+    const [reservations, setReservations] = useState([])
     const [filter, setFilter] = useState('all')
     const [searchTerm, setSearchTerm] = useState('')
 
-    // Mock data - replace with actual API call
-    const reservations = [
-        {
-            id: 1,
-            eventType: 'Meeting',
-            date: '2024-03-20',
-            location: 'Main Building',
-            roomNumber: '101',
-            status: 'confirmed',
-            description: 'Weekly team meeting'
-        },
-        {
-            id: 2,
-            eventType: 'Conference',
-            date: '2024-03-21',
-            location: 'Conference Center',
-            roomNumber: 'A1',
-            status: 'pending',
-            description: 'Annual tech conference'
-        },
-        {
-            id: 3,
-            eventType: 'Workshop',
-            date: '2024-03-22',
-            location: 'Training Center',
-            roomNumber: 'B2',
-            status: 'cancelled',
-            description: 'Employee training session'
+    useEffect(() => {
+        // Load reservations from localStorage
+        const loadReservations = () => {
+            const savedReservations = JSON.parse(localStorage.getItem('reservations') || '[]')
+            setReservations(savedReservations)
         }
-    ]
 
-    const filteredReservations = reservations.filter(reservation => {
-        const matchesFilter = filter === 'all' || reservation.status === filter
-        const matchesSearch = reservation.eventType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            reservation.roomNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            reservation.description.toLowerCase().includes(searchTerm.toLowerCase())
+        loadReservations()
+        // Add event listener for storage changes
+        window.addEventListener('storage', loadReservations)
+        return () => window.removeEventListener('storage', loadReservations)
+    }, [])
+
+    const handleDelete = (id) => {
+        if (window.confirm('Are you sure you want to delete this reservation?')) {
+            const updatedReservations = reservations.filter(res => res.id !== id)
+            localStorage.setItem('reservations', JSON.stringify(updatedReservations))
+            setReservations(updatedReservations)
+        }
+    }
+
+    const handleStatusChange = (id, newStatus) => {
+        const updatedReservations = reservations.map(res =>
+            res.id === id ? { ...res, status: newStatus } : res
+        )
+        localStorage.setItem('reservations', JSON.stringify(updatedReservations))
+        setReservations(updatedReservations)
+    }
+
+    const filteredReservations = reservations.filter(res => {
+        const matchesFilter = filter === 'all' || res.status === filter
+        const matchesSearch = res.eventType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            res.roomNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            res.description.toLowerCase().includes(searchTerm.toLowerCase())
         return matchesFilter && matchesSearch
     })
 
-    const getStatusBadge = (status) => {
-        const statusClasses = {
-            confirmed: 'badge-success',
-            pending: 'badge-warning',
-            cancelled: 'badge-error'
+    const getStatusBadgeClass = (status) => {
+        switch (status) {
+            case 'pending': return 'badge-warning'
+            case 'completed': return 'badge-success'
+            case 'cancelled': return 'badge-error'
+            default: return 'badge-ghost'
         }
-        return (
-            <div className={`badge ${statusClasses[status]}`}>
-                {status.charAt(0).toUpperCase() + status.slice(1)}
-            </div>
-        )
     }
 
     return (
@@ -67,7 +63,7 @@ const ReservationList = () => {
                         {/* Header Section */}
                         <div className="flex flex-col md:flex-row justify-between items-center mb-6">
                             <h2 className="text-2xl font-bold">Event Reservations</h2>
-                            <Link to="/reservations/new" className="btn btn-primary">
+                            <Link to="/new-reservation" className="btn btn-primary">
                                 New Reservation
                             </Link>
                         </div>
@@ -90,9 +86,10 @@ const ReservationList = () => {
                                     onChange={(e) => setFilter(e.target.value)}
                                 >
                                     <option value="all">All Status</option>
-                                    <option value="confirmed">Confirmed</option>
                                     <option value="pending">Pending</option>
+                                    <option value="completed">Completed</option>
                                     <option value="cancelled">Cancelled</option>
+                                    <option value="approved">Cancelled</option>
                                 </select>
                             </div>
                         </div>
@@ -114,36 +111,59 @@ const ReservationList = () => {
                                 <tbody>
                                     {filteredReservations.map((reservation) => (
                                         <tr key={reservation.id}>
-                                            <td>{reservation.eventType}</td>
+                                            <td>
+                                                <div className="flex items-center gap-2">
+                                                    <FaCalendarAlt className="text-primary" />
+                                                    {reservation.eventType}
+                                                </div>
+                                            </td>
                                             <td>{new Date(reservation.date).toLocaleDateString()}</td>
-                                            <td>{reservation.location}</td>
-                                            <td>{reservation.roomNumber}</td>
+                                            <td>
+                                                <div className="flex items-center gap-2">
+                                                    <FaMapMarkerAlt className="text-primary" />
+                                                    {reservation.location}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div className="flex items-center gap-2">
+                                                    <FaDoorOpen className="text-primary" />
+                                                    {reservation.roomNumber}
+                                                </div>
+                                            </td>
                                             <td className="max-w-xs truncate">{reservation.description}</td>
-                                            <td>{getStatusBadge(reservation.status)}</td>
+                                            <td>
+                                                <select
+                                                    className={`select select-bordered select-sm ${getStatusBadgeClass(reservation.status)}`}
+                                                    value={reservation.status}
+                                                    onChange={(e) => handleStatusChange(reservation.id, e.target.value)}
+                                                >
+                                                    <option value="pending">Pending</option>
+                                                    <option value="completed">Completed</option>
+                                                    <option value="cancelled">Cancelled</option>
+                                                </select>
+                                            </td>
                                             <td>
                                                 <div className="flex gap-2">
                                                     <button
-                                                        className="btn btn-sm btn-ghost"
+                                                        className="btn btn-ghost btn-sm"
                                                         onClick={() => navigate(`/reservations/${reservation.id}`)}
                                                     >
-                                                        View
+                                                        <FaEdit />
                                                     </button>
                                                     <button
-                                                        className="btn btn-sm btn-ghost"
-                                                        onClick={() => navigate(`/reservations/${reservation.id}/edit`)}
+                                                        className="btn btn-ghost btn-sm text-error"
+                                                        onClick={() => handleDelete(reservation.id)}
                                                     >
-                                                        Edit
+                                                        <FaTrash />
                                                     </button>
                                                     <button
-                                                        className="btn btn-sm btn-error btn-ghost"
+                                                        className="btn btn-ghost btn-sm"
                                                         onClick={() => {
-                                                            if (window.confirm('Are you sure you want to cancel this reservation?')) {
-                                                                // Handle cancellation
-                                                                console.log('Cancelling reservation:', reservation.id)
-                                                            }
+                                                            // Show description in a modal or tooltip
+                                                            alert(reservation.description)
                                                         }}
                                                     >
-                                                        Cancel
+                                                        <FaInfoCircle />
                                                     </button>
                                                 </div>
                                             </td>

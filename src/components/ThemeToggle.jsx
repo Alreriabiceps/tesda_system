@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 const ThemeToggle = () => {
-    const [theme, setTheme] = useState(localStorage.getItem('theme') || 'valentine')
+    const [theme, setTheme] = useState(localStorage.getItem('theme') || 'winter')
 
     useEffect(() => {
         localStorage.setItem('theme', theme)
@@ -9,7 +9,7 @@ const ThemeToggle = () => {
     }, [theme])
 
     const toggleTheme = () => {
-        setTheme(prevTheme => prevTheme === 'valentine' ? 'coffee' : 'valentine')
+        setTheme(prevTheme => prevTheme === 'winter' ? 'business' : 'winter')
     }
 
     return (
@@ -18,7 +18,7 @@ const ThemeToggle = () => {
             className="btn btn-ghost btn-circle"
             aria-label="Toggle theme"
         >
-            {theme === 'valentine' ? '🌙' : '☀️'}
+            {theme === 'winter' ? '🌙' : '☀️'}
         </button>
     )
 }

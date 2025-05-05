@@ -17,6 +17,10 @@ import Home from './pages/Home'
 import POSDashboard from './pages/Pointofsales/POSDashboard'
 import ItemList from './pages/Pointofsales/ItemList'
 import AddItem from './pages/Pointofsales/AddItem'
+import EditItem from './pages/Pointofsales/EditItem'
+import ProductPOS from './pages/Pointofsales/ProductPOS'
+
+
 
 
 function App() {
@@ -33,12 +37,15 @@ function App() {
           <Route path="/new-reservation" element={<NewReservation />} />
           <Route path="/reservation-list" element={<ReservationList />} />
           <Route path="/change-password" element={<ChangePassword />} />
+
         </Route>
 
         <Route element={<POSLayout />} >
           <Route path="/pos-dashboard" element={<POSDashboard />} />
           <Route path="/item-list" element={<ItemList />} />
           <Route path="/add-item" element={<AddItem />} />
+          <Route path="/edit-item/:id" element={<EditItem />} />
+          <Route path="/product-pos" element={<ProductPOS />} />
 
 
 

@@ -1,45 +1,48 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router'
+import React, { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router'
+import { FaEdit, FaTrash, FaBox, FaTag, FaDollarSign, FaHashtag, FaInfoCircle } from 'react-icons/fa'
+import ItemDetailsModal from './ItemDetailsModal'
 
 const ItemList = () => {
+    const navigate = useNavigate()
+    const [items, setItems] = useState([])
     const [searchTerm, setSearchTerm] = useState('')
     const [categoryFilter, setCategoryFilter] = useState('all')
+    const [selectedItem, setSelectedItem] = useState(null)
 
-    // Mock data - replace with actual API call
-    const items = [
-        {
-            id: 1,
-            name: 'Laptop Pro',
-            category: 'Electronics',
-            price: 1299.99,
-            quantity: 15,
-            image: 'https://placehold.co/100x100'
-        },
-        {
-            id: 2,
-            name: 'Wireless Headphones',
-            category: 'Electronics',
-            price: 199.99,
-            quantity: 30,
-            image: 'https://placehold.co/100x100'
-        },
-        {
-            id: 3,
-            name: 'Coffee Maker',
-            category: 'Home & Kitchen',
-            price: 79.99,
-            quantity: 20,
-            image: 'https://placehold.co/100x100'
-        },
-        {
-            id: 4,
-            name: 'Yoga Mat',
-            category: 'Sports & Outdoors',
-            price: 29.99,
-            quantity: 50,
-            image: 'https://placehold.co/100x100'
+    useEffect(() => {
+        // Load items from localStorage
+        const loadItems = () => {
+            const savedItems = JSON.parse(localStorage.getItem('pos-items') || '[]')
+            setItems(savedItems)
         }
-    ]
+
+        loadItems()
+        // Add event listener for storage changes
+        window.addEventListener('storage', loadItems)
+        return () => window.removeEventListener('storage', loadItems)
+    }, [])
+
+    const handleDelete = (id) => {
+        if (window.confirm('Are you sure you want to delete this item?')) {
+            const updatedItems = items.filter(item => item.id !== id)
+            localStorage.setItem('pos-items', JSON.stringify(updatedItems))
+            setItems(updatedItems)
+        }
+    }
+
+    const handleQuantityChange = (id, newQuantity) => {
+        const updatedItems = items.map(item =>
+            item.id === id ? {
+                ...item,
+                quantity: newQuantity,
+                status: newQuantity > 0 ? 'in-stock' : 'out-of-stock',
+                updatedAt: new Date().toISOString()
+            } : item
+        )
+        localStorage.setItem('pos-items', JSON.stringify(updatedItems))
+        setItems(updatedItems)
+    }
 
     const categories = ['all', ...new Set(items.map(item => item.category))]
 
@@ -52,7 +55,7 @@ const ItemList = () => {
     const formatPrice = (price) => {
         return new Intl.NumberFormat('en-US', {
             style: 'currency',
-            currency: 'USD'
+            currency: 'PHP'
         }).format(price)
     }
 
@@ -111,24 +114,44 @@ const ItemList = () => {
                             <tr key={item.id}>
                                 <td>
                                     <div className="avatar">
-                                        <div className="w-12 h-12 rounded-lg">
-                                            <img
-                                                src={item.image}
-                                                alt={item.name}
-                                                className="object-cover"
-                                            />
+                                        <div className="w-12 h-12 rounded-lg overflow-hidden">
+                                            {item.image ? (
+                                                <img
+                                                    src={item.image}
+                                                    alt={item.name}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <div className="bg-base-300 w-full h-full flex items-center justify-center">
+                                                    <FaBox className="text-2xl text-base-content/50" />
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </td>
                                 <td className="font-medium">{item.name}</td>
-                                <td>{item.category}</td>
-                                <td>{formatPrice(item.price)}</td>
                                 <td>
                                     <div className="flex items-center gap-2">
-                                        <span>{item.quantity}</span>
-                                        {item.quantity < 10 && (
-                                            <span className="badge badge-warning">Low Stock</span>
-                                        )}
+                                        <FaTag className="text-primary" />
+                                        {item.category}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div className="flex items-center gap-2">
+                                        <FaDollarSign className="text-primary" />
+                                        {formatPrice(item.price)}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div className="flex items-center gap-2">
+                                        <FaHashtag className="text-primary" />
+                                        <input
+                                            type="number"
+                                            className="input input-bordered input-sm w-20"
+                                            value={item.quantity}
+                                            onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value) || 0)}
+                                            min="0"
+                                        />
                                     </div>
                                 </td>
                                 <td>
@@ -139,20 +162,22 @@ const ItemList = () => {
                                 <td>
                                     <div className="flex gap-2">
                                         <button
-                                            className="btn btn-sm btn-ghost"
-                                            onClick={() => console.log('Edit item:', item.id)}
+                                            className="btn btn-ghost btn-sm"
+                                            onClick={() => navigate(`/pos/edit-item/${item.id}`)}
                                         >
-                                            Edit
+                                            <FaEdit />
                                         </button>
                                         <button
-                                            className="btn btn-sm btn-error btn-ghost"
-                                            onClick={() => {
-                                                if (window.confirm('Are you sure you want to delete this item?')) {
-                                                    console.log('Delete item:', item.id)
-                                                }
-                                            }}
+                                            className="btn btn-ghost btn-sm text-error"
+                                            onClick={() => handleDelete(item.id)}
                                         >
-                                            Delete
+                                            <FaTrash />
+                                        </button>
+                                        <button
+                                            className="btn btn-ghost btn-sm"
+                                            onClick={() => setSelectedItem(item)}
+                                        >
+                                            <FaInfoCircle />
                                         </button>
                                     </div>
                                 </td>
@@ -178,7 +203,7 @@ const ItemList = () => {
                 <div className="stat">
                     <div className="stat-title">Low Stock Items</div>
                     <div className="stat-value text-warning">
-                        {items.filter(item => item.quantity < 10).length}
+                        {items.filter(item => item.quantity < 10 && item.quantity > 0).length}
                     </div>
                 </div>
                 <div className="stat">
@@ -188,6 +213,14 @@ const ItemList = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Item Details Modal */}
+            {selectedItem && (
+                <ItemDetailsModal
+                    item={selectedItem}
+                    onClose={() => setSelectedItem(null)}
+                />
+            )}
         </div>
     )
 }

@@ -1,23 +1,24 @@
 import React from 'react'
 import { Link } from 'react-router'
 import ThemeToggle from '../components/ThemeToggle'
+import { FaMoneyBillWave, FaBox, FaChartLine, FaCalendarAlt, FaBuilding, FaCalendar } from 'react-icons/fa'
 
 const Home = () => {
     const posFeatures = [
         {
             title: 'Quick Sales',
             description: 'Process transactions efficiently with our streamlined POS interface',
-            icon: '💰'
+            icon: <FaMoneyBillWave className="text-4xl" />
         },
         {
             title: 'Inventory Management',
             description: 'Track stock levels and manage product inventory in real-time',
-            icon: '📦'
+            icon: <FaBox className="text-4xl" />
         },
         {
             title: 'Sales Reports',
             description: 'Generate detailed reports and analyze sales performance',
-            icon: '📊'
+            icon: <FaChartLine className="text-4xl" />
         }
     ]
 
@@ -25,17 +26,17 @@ const Home = () => {
         {
             title: 'Event Booking',
             description: 'Schedule and manage events with our intuitive booking system',
-            icon: '📅'
+            icon: <FaCalendarAlt className="text-4xl" />
         },
         {
             title: 'Room Management',
             description: 'Efficiently manage room availability and assignments',
-            icon: '🏢'
+            icon: <FaBuilding className="text-4xl" />
         },
         {
             title: 'Calendar View',
             description: 'View all reservations in an easy-to-use calendar interface',
-            icon: '📆'
+            icon: <FaCalendar className="text-4xl" />
         }
     ]
 
@@ -48,7 +49,7 @@ const Home = () => {
                         <div className="flex justify-end mb-4">
                             <ThemeToggle />
                         </div>
-                        <h1 className="text-4xl font-bold mb-4">Welcome to Your Business Hub</h1>
+                        <h1 className="text-4xl font-bold mb-4">WELCOME TO EXACT COLLEGE OF ASIA</h1>
                         <p className="text-lg opacity-80">
                             Manage your business operations efficiently with our integrated Point of Sale and Reservation System
                         </p>

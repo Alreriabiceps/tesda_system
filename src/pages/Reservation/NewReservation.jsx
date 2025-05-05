@@ -21,10 +21,26 @@ const NewReservation = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        // Here you would typically make an API call to save the reservation
-        console.log('Reservation data:', formData)
+
+        // Create new reservation object with ID and timestamp
+        const newReservation = {
+            id: Date.now(), // Using timestamp as unique ID
+            ...formData,
+            createdAt: new Date().toISOString(),
+            status: 'pending' // Adding status field
+        }
+
+        // Get existing reservations from localStorage
+        const existingReservations = JSON.parse(localStorage.getItem('reservations') || '[]')
+
+        // Add new reservation to the array
+        const updatedReservations = [...existingReservations, newReservation]
+
+        // Save updated array back to localStorage
+        localStorage.setItem('reservations', JSON.stringify(updatedReservations))
+
         // Navigate back to reservation list
-        navigate('/reservations')
+        navigate('/reservation-list')
     }
 
     return (
@@ -129,15 +145,12 @@ const NewReservation = () => {
                             <div className="bg-base-200 p-6 rounded-lg">
                                 <h3 className="text-lg font-semibold mb-4">Event Details</h3>
                                 <div className="space-y-6">
-                                    <div className="form-control">
-                                        <label className="label">
-                                            <span className="label-text font-medium">Event Description</span>
-                                        </label>
+                                    <div className="form-control w-full">
                                         <textarea
                                             name="description"
                                             value={formData.description}
                                             onChange={handleChange}
-                                            className="textarea textarea-bordered h-32"
+                                            className="textarea textarea-bordered h-48 w-full"
                                             placeholder="Please provide details about your event"
                                             required
                                         ></textarea>

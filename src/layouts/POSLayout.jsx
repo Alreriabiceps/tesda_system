@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router'
 import ThemeToggle from '../components/ThemeToggle'
 import { Outlet } from 'react-router'
+import { FaChartLine, FaPlus, FaBox, FaTags, FaUsers, FaChartBar, FaCog, FaChevronLeft, FaChevronRight, FaUser } from 'react-icons/fa'
 
 const POSLayout = ({ children }) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true)
@@ -9,40 +10,26 @@ const POSLayout = ({ children }) => {
 
     const menuItems = [
         {
-            title: 'Dashboard',
-            path: '/pos',
-            icon: '📊'
+            title: 'Point of Sales Dashboard',
+            path: '/pos-dashboard',
+            icon: <FaChartLine className="text-xl" />
         },
         {
             title: 'Add Item',
             path: '/add-item',
-            icon: '💰'
+            icon: <FaPlus className="text-xl" />
         },
         {
             title: 'Products',
             path: '/item-list',
-            icon: '📦'
+            icon: <FaBox className="text-xl" />
         },
         {
-            title: 'Categories',
-            path: '/pos/categories',
-            icon: '🏷️'
+            title: 'ProducT POS',
+            path: '/product-pos',
+            icon: <FaBox className="text-xl" />
         },
-        {
-            title: 'Customers',
-            path: '/pos/customers',
-            icon: '👥'
-        },
-        {
-            title: 'Reports',
-            path: '/pos/reports',
-            icon: '📈'
-        },
-        {
-            title: 'Settings',
-            path: '/pos/settings',
-            icon: '⚙️'
-        }
+
     ]
 
     return (
@@ -54,13 +41,13 @@ const POSLayout = ({ children }) => {
                     <div className="p-4 border-b border-base-300">
                         <div className="flex items-center justify-between">
                             {isSidebarOpen && (
-                                <h1 className="text-xl font-bold">POS System</h1>
+                                <h1 className="text-xl font-bold">TESDA</h1>
                             )}
                             <button
                                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                                 className="btn btn-ghost btn-circle btn-sm"
                             >
-                                {isSidebarOpen ? '◀' : '▶'}
+                                {isSidebarOpen ? <FaChevronLeft /> : <FaChevronRight />}
                             </button>
                         </div>
                     </div>
@@ -110,7 +97,7 @@ const POSLayout = ({ children }) => {
                             <div className="badge badge-primary">Online</div>
                             <div className="avatar placeholder">
                                 <div className="bg-neutral text-neutral-content rounded-full w-8">
-                                    <span>👤</span>
+                                    <FaUser />
                                 </div>
                             </div>
                         </div>
