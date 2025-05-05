@@ -1,12 +1,18 @@
 import React, { useState } from 'react'
-import { Link, useLocation } from 'react-router'
+import { Link, useLocation, useNavigate } from 'react-router'
 import ThemeToggle from '../components/ThemeToggle'
 import { Outlet } from 'react-router'
-import { FaChartLine, FaPlus, FaBox, FaTags, FaUsers, FaChartBar, FaCog, FaChevronLeft, FaChevronRight, FaUser } from 'react-icons/fa'
+import { FaChartLine, FaPlus, FaBox, FaTags, FaUsers, FaChartBar, FaCog, FaChevronLeft, FaChevronRight, FaUser, FaSignOutAlt, FaHome } from 'react-icons/fa'
 
 const POSLayout = ({ children }) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true)
     const location = useLocation()
+    const navigate = useNavigate()
+
+    const handleLogout = () => {
+        // Add any logout logic here (e.g., clearing tokens, etc.)
+        navigate('/')
+    }
 
     const menuItems = [
         {
@@ -29,7 +35,6 @@ const POSLayout = ({ children }) => {
             path: '/product-pos',
             icon: <FaBox className="text-xl" />
         },
-
     ]
 
     return (
@@ -71,13 +76,23 @@ const POSLayout = ({ children }) => {
 
                     {/* Footer */}
                     <div className="p-4 border-t border-base-300">
-                        <div className="flex items-center justify-between">
+                        <div className="space-y-2">
                             {isSidebarOpen && (
-                                <Link to="/" className="text-sm opacity-70 hover:opacity-100">
+                                <Link to="/" className="flex items-center text-sm opacity-70 hover:opacity-100">
+                                    <FaHome className="mr-2" />
                                     Back to Home
                                 </Link>
                             )}
-                            <ThemeToggle />
+                            <button
+                                onClick={handleLogout}
+                                className="flex items-center text-sm text-error opacity-70 hover:opacity-100 w-full"
+                            >
+                                <FaSignOutAlt className="mr-2" />
+                                {isSidebarOpen && <span>Logout</span>}
+                            </button>
+                            <div className="flex items-center justify-end">
+                                <ThemeToggle />
+                            </div>
                         </div>
                     </div>
                 </div>

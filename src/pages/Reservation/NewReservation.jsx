@@ -52,7 +52,7 @@ const NewReservation = () => {
                             <h2 className="text-2xl font-bold">New Event Reservation</h2>
                             <button
                                 type="button"
-                                onClick={() => navigate('/reservations')}
+                                onClick={() => navigate('/reservation-list')}
                                 className="btn btn-ghost"
                             >
                                 Back to List

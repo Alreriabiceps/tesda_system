@@ -67,7 +67,7 @@ const POSDashboard = () => {
                     </div>
                 </Link>
 
-                <Link to="/pos/new-sale" className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
+                <Link to="/product-pos" className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
                     <div className="card-body">
                         <div className="flex items-center gap-4">
                             <div className="bg-primary/10 p-3 rounded-lg">
@@ -83,7 +83,7 @@ const POSDashboard = () => {
             </div>
 
             {/* Statistics */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="stat bg-base-100 shadow-xl">
                     <div className="stat-figure text-primary">
                         <FaBox className="text-3xl" />
@@ -108,13 +108,7 @@ const POSDashboard = () => {
                     <div className="stat-value text-error">{stats.outOfStock}</div>
                 </div>
 
-                <div className="stat bg-base-100 shadow-xl">
-                    <div className="stat-figure text-success">
-                        <FaDollarSign className="text-3xl" />
-                    </div>
-                    <div className="stat-title">Total Value</div>
-                    <div className="stat-value">{formatCurrency(stats.totalValue)}</div>
-                </div>
+
             </div>
 
             {/* Recent Activity */}

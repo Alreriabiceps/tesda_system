@@ -105,13 +105,13 @@ const Home = () => {
                 <div className="mt-12">
                     <h2 className="text-2xl font-bold mb-6">Quick Actions</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <Link to="/pos/new-sale" className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
+                        <Link to="/pos-dashboard" className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
                             <div className="card-body">
                                 <h3 className="card-title">New Sale</h3>
                                 <p>Start a new transaction in the POS system</p>
                             </div>
                         </Link>
-                        <Link to="/reservations/new" className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
+                        <Link to="/new-reservation" className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
                             <div className="card-body">
                                 <h3 className="card-title">New Reservation</h3>
                                 <p>Create a new event reservation</p>

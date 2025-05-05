@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router'
 
 
 import Login from './components/Login'
-import Dashboard from './pages/Dashboard'
+import Dashboard from './pages/Reservation/Dashboard'
 import NewReservation from './pages/Reservation/NewReservation'
 import ReservationList from './pages/Reservation/ReservationList'
 
