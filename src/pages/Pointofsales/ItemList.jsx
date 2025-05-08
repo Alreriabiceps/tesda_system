@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router'
-import { FaEdit, FaTrash, FaBox, FaTag, FaDollarSign, FaHashtag, FaInfoCircle } from 'react-icons/fa'
+import { FaEdit, FaTrash, FaBox, FaTag, FaHashtag, FaInfoCircle } from 'react-icons/fa'
 import ItemDetailsModal from './ItemDetailsModal'
 
 const ItemList = () => {
@@ -53,10 +53,7 @@ const ItemList = () => {
     })
 
     const formatPrice = (price) => {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'PHP'
-        }).format(price)
+        return `₱${Number(price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
     }
 
     return (
@@ -138,8 +135,8 @@ const ItemList = () => {
                                 </td>
                                 <td>
                                     <div className="flex items-center gap-2">
-                                        <FaDollarSign className="text-primary" />
-                                        {formatPrice(item.price)}
+                                        <span className="text-primary font-bold">₱</span>
+                                        {formatPrice(item.price).replace('₱', '')}
                                     </div>
                                 </td>
                                 <td>
