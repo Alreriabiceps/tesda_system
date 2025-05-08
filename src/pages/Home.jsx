@@ -49,7 +49,7 @@ const Home = () => {
                         <div className="flex justify-end mb-4">
                             <ThemeToggle />
                         </div>
-                        <h1 className="text-4xl font-bold mb-4">WELCOME TO EXACT COLLEGE OF ASIA</h1>
+                        <h1 className="text-4xl font-bold mb-4">WELCOME TO EXACT Colleges HOTEL</h1>
                         <p className="text-lg opacity-80">
                             Manage your business operations efficiently with our integrated Point of Sale and Reservation System
                         </p>
